@@ -1,0 +1,16 @@
+{
+  "name": "split-test-selector",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@code.buglog.ru:LOOTE/split-test-selector.git"
+  },
+  "keywords": [],
+  "author": "Ti",
+  "license": "GLWTPL"
+}
