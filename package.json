@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava",
+    "test:watch": "ava --watch"
   },
   "repository": {
     "type": "git",
@@ -12,5 +13,11 @@
   },
   "keywords": [],
   "author": "Ti",
-  "license": "GLWTPL"
+  "license": "GLWTPL",
+  "dependencies": {},
+  "devDependencies": {
+    "@ava/babel-preset-stage-4": "^2.0.0",
+    "@babel/register": "^7.0.0",
+    "ava": "^1.2.1"
+  }
 }
