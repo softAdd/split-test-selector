@@ -1,6 +1,16 @@
 import test from "ava";
 import splitTestSelector from ".";
 
+test("equals", t => {
+  const variants = [33.333, 33.333, 33.333];
+  t.is(splitTestSelector(1, variants), 0, "visit #1");
+  t.is(splitTestSelector(2, variants), 1, "visit #2");
+  t.is(splitTestSelector(3, variants), 2, "visit #3");
+  t.is(splitTestSelector(4, variants), 0, "visit #4");
+  t.is(splitTestSelector(5, variants), 1, "visit #5");
+  t.is(splitTestSelector(6, variants), 2, "visit #6");
+})
+
 test("simple", t => {
   const variants = [50, 25, 25];
 
