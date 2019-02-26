@@ -69,7 +69,7 @@ test.skip("two paralel", t => {
   }
 });
 
-test.skip("pecentage overall", t => {
+test.skip("percentage overall", t => {
   const variants = [50, 36, 14];
   const actual = [0, 0, 0];
   for (let visitor = 1; visitor <= 100; visitor++) {
@@ -79,4 +79,4 @@ test.skip("pecentage overall", t => {
   t.deepEqual(actual, variants);
 });
 
-test.todo("pecentage for each visiter");
+test.todo("percentage for each visiter");
