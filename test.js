@@ -31,12 +31,12 @@ test("simple", t => {
     t.is(variant, 2, "visit #4");
   }
   {
-    const variant = splitTestSelector(4, variants);
+    const variant = splitTestSelector(5, variants);
     t.is(variant, 0, "visit #5");
   }
 });
 
-test.skip("two paralel", t => {
+test("two paralel", t => {
   const variants1 = [50, 25, 25];
   const variants2 = [10, 5, 85];
   {
