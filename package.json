@@ -9,8 +9,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@code.buglog.ru:LOOTE/split-test-selector.git"
+    "url": "git@github.com:softAdd/split-test-selector.git"
   },
+  "homepage": "https://github.com/softAdd/split-test-selector",
   "keywords": [],
   "author": "Ti",
   "license": "GLWTPL",
