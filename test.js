@@ -78,3 +78,12 @@ test("percentage overall", t => {
   }
   t.deepEqual(actual, variants);
 });
+test("0%", t => {
+  const variants = [100, 0, 0, 0];
+  const actual = [0, 0, 0, 0];
+  for (let visitor = 1; visitor <= 100; visitor++) {
+    const selected = splitTestSelector(visitor, variants);
+    actual[selected]++;
+  }
+  t.deepEqual(actual, variants);
+});
