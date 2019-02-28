@@ -64,12 +64,12 @@ test("two paralel", t => {
     t.is(variant, 1);
   }
   {
-    const variant = splitTestSelector(3, variants1);
+    const variant = splitTestSelector(4, variants1);
     t.is(variant, 2);
   }
 });
 
-test.skip("percentage overall", t => {
+test("percentage overall", t => {
   const variants = [50, 36, 14];
   const actual = [0, 0, 0];
   for (let visitor = 1; visitor <= 100; visitor++) {
@@ -78,5 +78,3 @@ test.skip("percentage overall", t => {
   }
   t.deepEqual(actual, variants);
 });
-
-test.todo("percentage for each visiter");
