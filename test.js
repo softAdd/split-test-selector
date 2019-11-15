@@ -121,3 +121,12 @@ test("0%", t => {
   }
   t.deepEqual(actual, variants);
 });
+test("61% 19% 20%", t => {
+  const variants = [61, 19, 20];
+  const actual = [0, 0, 0];
+  for (let visitor = 1; visitor <= 100; visitor++) {
+    const selected = splitTestSelector(visitor, variants);
+    actual[selected]++;
+  }
+  t.deepEqual(actual, variants);
+});
