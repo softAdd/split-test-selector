@@ -1,9 +1,3 @@
-/**
- * @param {Number} visit
- * @param {Array} percentages
- * @return {Number} index
- */
-
 function NOD(arr) {
   return arr.reduce(function (x, y) {
     while (true) {
@@ -19,39 +13,45 @@ function NOD(arr) {
   });
 }
 
-function sumElems(arr) {
-  return arr.reduce((result, value) => result + value);
-}
 
+/**
+ * @param {Number} visit
+ * @param {Array} percentages
+ * @return {Number} index
+ */
 module.exports = function splitTestSelector(visit, percentages) {
-  //sort percentages
-  let values = percentages
-    .map((percent, index) => ({
-      percent,
-      index
-    }))
-    .sort((a, b) => {
-      if (a.percent === b.percent) {
-        return a.index - b.index
-      }
-      if (a.percent < b.percent) {
-        return 1
-      } else {
-        return -1
-      }
-    });
-
-  let percentagesOverall = sumElems(percentages);
-  let usersOnePass = percentagesOverall / NOD(percentages);
-  let currentLap = Math.ceil(visit / usersOnePass);
-  let currentUser = usersOnePass - ((usersOnePass * currentLap) - visit);
-
-  for (let value of values) {
-    currentUser -= Math.ceil(usersOnePass * value.percent / percentagesOverall);
-    if (currentUser <= 0) {
-      return value.index;
-    }
+  if (visit < 1) {
+    throw new Error("visit can't be < 1")
   }
 
+  const min = Math.min(...percentages.filter(v => v !== 0));
+  if (min === Infinity) {
+    throw new Error('wrong percentages')
+  }
+
+  const sum = percentages.reduce((result, value) => result + value);
+
+  const usersOnePass = sum / NOD(percentages);
+  const currentUser = (visit - 1) % usersOnePass;
+  const weights = percentages.map(percent => percent / min);
+  const scores = [...weights];
+
+  let i = 0;
+  while (true) {
+    const max = Math.max(...scores);
+    if (0 < max) {
+      const index = scores.findIndex(score => max === score);
+      if (i === currentUser) {
+        return index;
+      }
+      scores[index]--;
+      i++;
+    } else {
+      weights.forEach((weight, index) => scores[index] += weight);
+    }
+    if (sum < i) {
+      throw new Error('Havy cycle');
+    }
+  }
   return 0;
 }

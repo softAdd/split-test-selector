@@ -45,11 +45,11 @@ test("49%/51%", t => {
   }
   {
     const variant = splitTestSelector(2, variants);
-    t.is(variant, 1, "visit #2");
+    t.is(variant, 0, "visit #2");
   }
   {
     const variant = splitTestSelector(3, variants);
-    t.is(variant, 0, "visit #3");
+    t.is(variant, 1, "visit #3");
   }
 });
 
@@ -62,11 +62,11 @@ test("51%/49%", t => {
   }
   {
     const variant = splitTestSelector(2, variants);
-    t.is(variant, 0, "visit #2");
+    t.is(variant, 1, "visit #2");
   }
   {
     const variant = splitTestSelector(3, variants);
-    t.is(variant, 1, "visit #3");
+    t.is(variant, 0, "visit #3");
   }
 });
 
