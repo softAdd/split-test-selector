@@ -36,40 +36,6 @@ test("simple", t => {
   }
 });
 
-test("49%/51%", t => {
-  const variants = [49, 51];
-
-  {
-    const variant = splitTestSelector(1, variants);
-    t.is(variant, 1, "visit #1");
-  }
-  {
-    const variant = splitTestSelector(2, variants);
-    t.is(variant, 1, "visit #2");
-  }
-  {
-    const variant = splitTestSelector(3, variants);
-    t.is(variant, 0, "visit #3");
-  }
-});
-
-test("51%/49%", t => {
-  const variants = [51, 49];
-
-  {
-    const variant = splitTestSelector(1, variants);
-    t.is(variant, 0, "visit #1");
-  }
-  {
-    const variant = splitTestSelector(2, variants);
-    t.is(variant, 0, "visit #2");
-  }
-  {
-    const variant = splitTestSelector(3, variants);
-    t.is(variant, 1, "visit #3");
-  }
-});
-
 test("two paralel", t => {
   const variants1 = [50, 25, 25];
   const variants2 = [10, 5, 85];
@@ -112,6 +78,7 @@ test("percentage overall", t => {
   }
   t.deepEqual(actual, variants);
 });
+
 test("0%", t => {
   const variants = [100, 0, 0, 0];
   const actual = [0, 0, 0, 0];
@@ -121,6 +88,7 @@ test("0%", t => {
   }
   t.deepEqual(actual, variants);
 });
+
 test("61% 19% 20%", t => {
   const variants = [61, 19, 20];
   const actual = [0, 0, 0];
@@ -129,4 +97,24 @@ test("61% 19% 20%", t => {
     actual[selected]++;
   }
   t.deepEqual(actual, variants);
+});
+
+test("49/51 test", t => {
+  const variants = [49, 51];
+  {
+    const variant = splitTestSelector(1, variants);
+    t.is(variant, 1, "visit #1");
+  }
+  {
+    const variant = splitTestSelector(2, variants);
+    t.is(variant, 2, "visit #2");
+  }
+  {
+    const variant = splitTestSelector(3, variants);
+    t.is(variant, 1, "visit #3");
+  }
+  {
+    const variant = splitTestSelector(4, variants);
+    t.is(variant, 2, "visit #4");
+  }
 });
