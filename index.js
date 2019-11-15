@@ -101,12 +101,15 @@ function splitTestSelector(visit, percentages) {
   // console.log(userShare)
   for (let i = 0; i < sortedPercentages.length; i++) {
     const value = sortedPercentages[i];
-    const currentUnitLimit = usersOnePass * (value.percent / percentagesOverall);
+    const currentUsersLimit = usersOnePass * (value.percent / percentagesOverall);
     let usersRequired = initialDistribution * (value.percent / percentagesOverall);
-    usersRequired = Math.floor(usersRequired)
-
-    console.log(currentUnitLimit)
+    usersRequired = Math.ceil(usersRequired)
+    if (usersRequired > currentUsersLimit) {
+      // 
+    }
+    console.log(usersRequired)
   }
+  // remain user distribution
 
   console.log(sortedPercentages)
 

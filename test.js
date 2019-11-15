@@ -99,11 +99,12 @@ test("61% 19% 20%", t => {
   t.deepEqual(actual, variants);
 });
 
-test("49/51 test", t => {
+test("49%/51%", t => {
   const variants = [49, 51];
+
   {
     const variant = splitTestSelector(1, variants);
-    t.is(variant, 1, "visit #1");
+    t.is(variant, 2, "visit #1");
   }
   {
     const variant = splitTestSelector(2, variants);
@@ -113,8 +114,21 @@ test("49/51 test", t => {
     const variant = splitTestSelector(3, variants);
     t.is(variant, 1, "visit #3");
   }
+});
+
+test("51%/49%", t => {
+  const variants = [51, 49];
+
   {
-    const variant = splitTestSelector(4, variants);
-    t.is(variant, 2, "visit #4");
+    const variant = splitTestSelector(1, variants);
+    t.is(variant, 1, "visit #1");
+  }
+  {
+    const variant = splitTestSelector(2, variants);
+    t.is(variant, 1, "visit #2");
+  }
+  {
+    const variant = splitTestSelector(3, variants);
+    t.is(variant, 2, "visit #3");
   }
 });
