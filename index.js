@@ -5,41 +5,10 @@
  */
 
 class PercentFactory {
-  constructor() {
-    this.getAvailableIndex = this.getAvailableIndex.bind(this);
-  }
-
-  getAvailableIndex(percentages, usersOnePass, percentagesOverall) {
-    let index = 0;
-    const userShare = percentagesOverall / usersOnePass;
-    console.log(userShare)
-    console.log(percentages)
-
-    for (let value of percentages) {
-      const updatedPercentage = value.currentUsers * userShare;
-      if (updatedPercentage < value.percent && (updatedPercentage + userShare) <= value.percent) {
-        index = value.index;
-        break;
-      }
-    }
-    console.log(percentages)
-
-    // for (let value of percentages) {
-    //   if (value.currentPercentage + userShare > value.percent) {
-    //     continue;
-    //   } else {
-    //     index = value.index;
-    //     return index;
-    //   }
-    // }
-    return index;
-  }
-
   create(percent, index) {
     return {
       percent,
       currentUsers: 0,
-      currentPercentage: 0,
       index
     }
   }
@@ -73,7 +42,7 @@ function splitTestSelector(visit, percentages) {
     currentUser = usersOnePass;
   }
 
-  const percentFactory = new PercentFactory(percentagesOverall)
+  const percentFactory = new PercentFactory()
 
   let sortedPercentages = percentages
     .map((percent, index) => percentFactory.create(percent, index))
@@ -88,62 +57,40 @@ function splitTestSelector(visit, percentages) {
       }
     });
 
-  let selectedVariant = 0;
   // return a higher percentage if it first visitor
   if (currentUser === 1) {
-    return sortedPercentages[selectedVariant].index;
+    return sortedPercentages[0].index;
   }
-  // user and percentage distribution
+  // first distribution (n - 1), where 'n' is number of user sought
   const initialDistribution = currentUser - 1;
-  const userShare = percentagesOverall / initialDistribution;
-  let usersRemain = initialDistribution;
-  console.log(userShare)
-  // console.log(userShare)
-  for (let i = 0; i < sortedPercentages.length; i++) {
-    const value = sortedPercentages[i];
-    const currentUsersLimit = usersOnePass * (value.percent / percentagesOverall);
-    let usersRequired = initialDistribution * (value.percent / percentagesOverall);
-    usersRequired = Math.ceil(usersRequired)
-    if (usersRequired > currentUsersLimit) {
-      // 
-    }
-    console.log(usersRequired)
+  let currentSharePercentage = percentagesOverall / initialDistribution
+  let usersRemain = initialDistribution
+
+  for (let percentageValue of sortedPercentages) {
+    percentageValue.currentUsers = Math.floor(percentageValue.percent / currentSharePercentage)
+    usersRemain -= percentageValue.currentUsers
   }
-  // remain user distribution
 
-  console.log(sortedPercentages)
+  if (usersRemain > 0) {
+    sortedPercentages[0].currentUsers += usersRemain
+  }
+  // second distribution (n), where 'n' is number of user sought
+  currentSharePercentage = percentagesOverall / currentUser
+  let increaseIndex = 0;
+  
+  for (let percentageValue of sortedPercentages) {
+    let { currentUsers, percent, index } = percentageValue
 
-  // for (let i = 0; i < sortedPercentages.length; i++) {
+    const currentPercentage = currentUsers * currentSharePercentage
+    if (currentPercentage + currentSharePercentage <= percent) {
+      increaseIndex = index
+    }
+  }
 
-  //   let usersRequired = initialDistribution * (sortedPercentages[i].percent / percentagesOverall)
-  //   console.log(usersRequired)
-  //   if (i === 0) {
-  //     usersRequired = Math.ceil(usersRequired)
-  //   } else {
-  //     usersRequired = Math.floor(usersRequired)
-  //   }
-
-  //   if (usersRemain <= usersRequired) {
-  //     sortedPercentages[i].currentUsers = usersRemain
-  //     sortedPercentages[i].currentPercentage = userShare * sortedPercentages[i].currentUsers
-  //     usersRemain -= usersRequired
-  //     break;
-  //   } else {
-  //     sortedPercentages[i].currentUsers = usersRequired
-  //     sortedPercentages[i].currentPercentage = userShare * sortedPercentages[i].currentUsers
-  //     usersRemain -= usersRequired
-  //   }
-  // }
-  // if (usersRemain !== 0) {
-  //   sortedPercentages[0].currentUsers += usersRemain
-  //   sortedPercentages[0].currentPercentage += userShare * usersRemain
-  // }
-
-  // return percentFactory.getAvailableIndex(sortedPercentages, usersOnePass, percentagesOverall)
-  return 0
+  return sortedPercentages[increaseIndex].index;
 }
 
-// console.log(splitTestSelector(4, [50, 25, 25]))
-splitTestSelector(4, [50, 25, 25])
+// const variants = [33.333, 33.333, 33.333];
+// console.log(splitTestSelector(2, variants));
 
-// module.exports = splitTestSelector
+module.exports = splitTestSelector
