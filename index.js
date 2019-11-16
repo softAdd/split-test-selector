@@ -1,3 +1,19 @@
+/**
+ * @param {Number} visit
+ * @param {Array} percentages
+ * @return {Number} index
+ */
+
+class PercentFactory {
+  create(percent, index) {
+    return {
+      percent,
+      currentUsers: 0,
+      index
+    }
+  }
+}
+
 function NOD(arr) {
   return arr.reduce(function (x, y) {
     while (true) {
@@ -13,44 +29,81 @@ function NOD(arr) {
   });
 }
 
-
-/**
- * @param {Number} visit
- * @param {Array} percentages
- * @return {Number} index
- */
-module.exports = function splitTestSelector(visit, percentages) {
-  if (visit < 1) {
-    throw new Error("visit can't be < 1")
-  }
-
-  const min = Math.min(...percentages.filter(v => v !== 0));
-  if (min === Infinity) {
-    throw new Error('wrong percentages')
-  }
-
-  const sum = percentages.reduce((result, value) => result + value);
-
-  const usersOnePass = sum / NOD(percentages);
-  const currentUser = (visit - 1) % usersOnePass;
-  const weights = percentages.map(percent => percent / min);
-  const scores = [...weights];
-
-  let i = 0;
-  while (true) {
-    const max = Math.max(...scores);
-    if (0 < max) {
-      const index = scores.findIndex(score => max === score);
-      if (i === currentUser) {
-        return index;
-      }
-      scores[index]--;
-      i++;
-    } else {
-      weights.forEach((weight, index) => scores[index] += weight);
-    }
-    if (sum < i) {
-      throw new Error('Havy cycle');
-    }
-  }
+function sumElems(arr) {
+  return arr.reduce((result, value) => result + value);
 }
+
+function splitTestSelector(visit, percentages) {
+  const percentagesOverall = sumElems(percentages);
+  const usersOnePass = percentagesOverall / NOD(percentages);
+  let currentUser = visit > usersOnePass ? visit % usersOnePass : visit;
+
+  if (currentUser === 0) {
+    currentUser = usersOnePass;
+  }
+
+  const percentFactory = new PercentFactory()
+
+  let sortedPercentages = percentages
+    .map((percent, index) => percentFactory.create(percent, index))
+    .sort((a, b) => {
+      if (a.percent === b.percent) {
+        return a.index - b.index
+      }
+      if (a.percent < b.percent) {
+        return 1
+      } else {
+        return -1
+      }
+    });
+
+  // return a higher percentage if it first visitor
+  if (currentUser === 1) {
+    return sortedPercentages[0].index;
+  }
+  // first distribution (n - 1), where 'n' is number of user sought
+  const initialDistribution = currentUser - 1;
+  let currentSharePercentage = percentagesOverall / initialDistribution
+  let usersRemain = initialDistribution
+
+  for (let percentageValue of sortedPercentages) {
+    percentageValue.currentUsers = Math.floor(percentageValue.percent / currentSharePercentage)
+    usersRemain -= percentageValue.currentUsers
+  }
+
+  if (usersRemain > 0) {
+    sortedPercentages[0].currentUsers += usersRemain
+  }
+
+  // second distribution (n), where 'n' is number of user sought
+  currentSharePercentage = percentagesOverall / currentUser
+  let increaseIndex = 0;
+  
+  for (let percentageValue of sortedPercentages) {
+    let { currentUsers, percent, index } = percentageValue
+
+    const currentPercentage = currentUsers * currentSharePercentage
+    if (currentPercentage + currentSharePercentage <= percent) {
+      increaseIndex = index
+    }
+  }
+  console.log(sortedPercentages)
+
+  return sortedPercentages[increaseIndex].index;
+}
+
+{
+  const variants = [33.333, 33.333, 33.333];
+  console.log(splitTestSelector(3, variants));
+}
+{
+  const variants = [61, 20, 19];
+  console.log(splitTestSelector(10, variants));
+}
+{
+  const variants = [50, 25, 25];
+  console.log(splitTestSelector(4, variants));
+}
+
+
+module.exports = splitTestSelector
