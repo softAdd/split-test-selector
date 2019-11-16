@@ -70,12 +70,26 @@ function splitTestSelector(visit, percentages) {
     percentageValue.currentUsers = Math.floor(percentageValue.percent / currentSharePercentage)
     usersRemain -= percentageValue.currentUsers
   }
-
-  if (usersRemain > 0) {
-    sortedPercentages[0].currentUsers += usersRemain
+  
+  // second distribution on unsorted users
+  for (let i = 0; i < sortedPercentages.length; i++) {
+    if (usersRemain === 0) {
+      break;
+    }
+    const currentLimit = Math.ceil((usersOnePass * sortedPercentages[i].percent / percentagesOverall))
+    if (currentLimit > sortedPercentages[i].currentUsers) {
+      const countOfUsers = (currentLimit - sortedPercentages[i].currentUsers);
+      
+      if (usersRemain > countOfUsers) {
+        sortedPercentages[i].currentUsers += countOfUsers;
+        usersRemain -= countOfUsers;
+      } else {
+        sortedPercentages[i].currentUsers += usersRemain;
+        usersRemain = 0;
+      }
+    }
   }
-
-  // second distribution (n), where 'n' is number of user sought
+  // third distribution (n), where 'n' is number of user sought
   currentSharePercentage = percentagesOverall / currentUser
   let increaseIndex = 0;
   
@@ -87,23 +101,12 @@ function splitTestSelector(visit, percentages) {
       increaseIndex = index
     }
   }
-  console.log(sortedPercentages)
+  // console.log(sortedPercentages)
 
   return sortedPercentages[increaseIndex].index;
 }
 
-{
-  const variants = [33.333, 33.333, 33.333];
-  console.log(splitTestSelector(3, variants));
-}
-{
-  const variants = [61, 20, 19];
-  console.log(splitTestSelector(10, variants));
-}
-{
-  const variants = [50, 25, 25];
-  console.log(splitTestSelector(4, variants));
-}
-
+const variants = [33.333, 33.333, 33.333]
+console.log(splitTestSelector(2, variants))
 
 module.exports = splitTestSelector
